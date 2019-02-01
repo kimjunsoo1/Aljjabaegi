@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mybatis.boardMapper">
+	<insert id="boardWrite" parameterType="boardDTO">
+		insert into board 
+		values (seq_board.nextval, #{id}, #{name}, #{subject}, 
+		#{content}, 0, sysdate)
+	</insert>	<!-- #{id} : getter는 소문자로 작성 -->
+	
+	<update id="updateHit" parameterType="int">
+		update board set hit=hit+1 where seq=#{seq}
+	</update>
+	
+	<delete id="boardDelete" parameterType="int">
+		delete board where seq=#{seq}
+	</delete>
+	
+	<select id="boardView" parameterType="int" resultType="boardDTO">
+		select * from board where seq=#{seq}
+	</select>
+	
+	<select id="boardList" parameterType="java.util.Map" 
+			resultType="boardDTO">		
+		<![CDATA[select * from  
+		(select rownum rn, tt.* from 
+		(select * from board order by seq desc) tt)  
+		where rn>=#{startNum} and rn<=#{endNum}]]>
+	</select>
+	
+	<select id="getTotalA" resultType="int">
+		select count(*) from board
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+

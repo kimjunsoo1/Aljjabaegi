@@ -10,7 +10,7 @@ response.setDateHeader("Expires", -1); // Proxies.
 
 %> 
 <h1>
-	<a href="./main.jsp"><img src="../img/A-Team-logo.png" alt="A-Team logo" /></a>
+	<a href="/main/main.jsp"><img src="../img/A-Team-logo.png" alt="A-Team logo" /></a>
 </h1>
 
 <nav class="navbar navbar-inverse">

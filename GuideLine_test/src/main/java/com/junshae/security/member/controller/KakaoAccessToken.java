@@ -64,8 +64,8 @@ public class KakaoAccessToken {
 	        final String RequestUrl = "https://kapi.kakao.com/v2/user/me"; // Host
 	        final List<NameValuePair> postParams = new ArrayList<NameValuePair>();
 	 
-	        String CLIENT_ID = "b066f3a7f97bd5032787a1af9ee29a5c"; // REST API KEY
-	        String REDIRECT_URI = "http://localhost:8080/GuideLine_test/login/kakaologin.do"; // 리다이렉트 URI
+	        // String CLIENT_ID = "b066f3a7f97bd5032787a1af9ee29a5c"; // REST API KEY
+	        // String REDIRECT_URI = "http://localhost:8080/GuideLine_test/login/kakaologin.do"; // 리다이렉트 URI
 	        	        	        
 	        	       
 	 

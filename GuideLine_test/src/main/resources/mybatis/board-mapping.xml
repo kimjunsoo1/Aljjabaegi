@@ -6,8 +6,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="mybatis.boardMapper">
 	<insert id="boardWrite" parameterType="boardDTO">
 		insert into board 
-		values (seq_board.nextval, #{id}, #{name}, #{subject}, 
-		#{content}, 0, sysdate)
+		values ( #{id}, #{name}, #{subject}, 
+		#{content}, 0, sysdate())
 	</insert>	<!-- #{id} : getter는 소문자로 작성 -->
 	
 	<update id="updateHit" parameterType="int">
@@ -24,15 +24,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="boardList" parameterType="java.util.Map" 
 			resultType="boardDTO">		
-		<![CDATA[select * from  
-		(select rownum rn, tt.* from 
-		(select * from board order by seq desc) tt)  
-		where rn>=#{startNum} and rn<=#{endNum}]]>
+		<![CDATA[SELECT	V.*	FROM
+		( SELECT *, @rownum:=@rownum+1 as rownum
+		FROM board,	(SELECT @rownum:=0) TMP	ORDER BY seq desc LIMIT #{startNum},#{endNum}
+		) V;]]>
 	</select>
 	
 	<select id="getTotalA" resultType="int">
 		select count(*) from board
 	</select>
+	
+	<insert id="insertAttachFile" parameterType="AttachFile">
+		INSERT INTO attachfile (attachfileno, filename, filetype, filesize, articleno)
+		VALUES
+		(seq_attachfile.nextval, #{filename}, #{filetype}, #{filesize}, #{articleNo})
+	</insert>
+	
+	<select id="getAttachFileList" parameterType="int" resultType="AttachFile">
+		select * 
+		from attachfile 
+		where articleno = #{articleNo} 
+		order by attachfileno
+	</select>
+		
+	<select id="getNewArticle" resultType="boardDTO">
+		SELECT *
+		FROM (SELECT * FROM board ORDER BY seq DESC) 
+		WHERE ROWNUM = 1
+	</select>
+		
+	
 </mapper>
 
 

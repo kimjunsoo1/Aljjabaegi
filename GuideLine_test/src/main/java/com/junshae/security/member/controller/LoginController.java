@@ -1,8 +1,6 @@
 package com.junshae.security.member.controller;
 
-import java.io.IOError;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -66,7 +64,7 @@ public class LoginController{
         
         
         //return "redirect:/login/loginForm.jsp";
-        return "redirect:./index.jsp";
+        return "redirect:./index.html";
         
     }
 
@@ -92,7 +90,7 @@ public class LoginController{
 	 		String nickname = null;
 	 		String thumbnailImage = null;
 	 		String profileImage = null;
-	 		String message = null;
+	 		String login_type = "kakao";
 	     		
 
 	        // 유저정보 카톡에서 가져오기 Get properties
@@ -106,11 +104,13 @@ public class LoginController{
 				nickname = properties.path("nickname").asText();
 				thumbnailImage = properties.path("thumbnail_image").asText();
 				profileImage = properties.path("profile_image").asText();
+				
 
 				System.out.println("kakao_id : " + kakao_id);
 				System.out.println("nickname : " + nickname);
 				System.out.println("thumbnailImage : " + thumbnailImage);
 				System.out.println("profileImage : " + profileImage);
+				System.out.println("login_type : " + login_type);
 			}	  
 			
 			
@@ -122,6 +122,8 @@ public class LoginController{
 				session = request.getSession();
 				session.setAttribute("memId", kakao_id);
 				session.setAttribute("memName", nickname);				
+				session.setAttribute("login_type", login_type);
+				session.setAttribute("accessToken", accessToken);
 							
 				
 				System.out.println("kakao session id : "+session.getAttribute("memId"));
@@ -133,7 +135,20 @@ public class LoginController{
 			return modelAndView;
 		}
 	
-		
+	@RequestMapping(value="/kakao_logout.do")
+		public ModelAndView logout(HttpSession session) {
+			KakaoAccessToken.kakaoLogout((JsonNode)session.getAttribute("accessToken"));
+			System.out.println("after logout Method");
+		   
+			
+		    session.invalidate();    
+			
+			
+		    ModelAndView modelAndView = new ModelAndView();
+		    modelAndView.setViewName("redirect:/A-team-index.jsp");
+		    return modelAndView;
+	}
+
 }
 
 	/*// 로그아웃 

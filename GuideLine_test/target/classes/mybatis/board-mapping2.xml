@@ -6,8 +6,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="mybatis.boardMapper">
 	<insert id="boardWrite" parameterType="boardDTO">
 		insert into board 
-		values ( #{id}, #{name}, #{subject}, 
-		#{content}, 0, sysdate())
+		values (seq_board.nextval, #{id}, #{name}, #{subject}, 
+		#{content}, 0, sysdate)
 	</insert>	<!-- #{id} : getter는 소문자로 작성 -->
 	
 	<update id="updateHit" parameterType="int">
@@ -24,10 +24,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="boardList" parameterType="java.util.Map" 
 			resultType="boardDTO">		
-		<![CDATA[SELECT	V.*	FROM
-		( SELECT *, @rownum:=@rownum+1 as rownum
-		FROM board,	(SELECT @rownum:=0) TMP	ORDER BY seq desc LIMIT #{startNum},#{endNum}
-		) V;]]>
+		<![CDATA[select * from  
+		(select rownum rn, tt.* from 
+		(select * from board order by seq desc) tt)  
+		where rn>=#{startNum} and rn<=#{endNum}]]>
 	</select>
 	
 	<select id="getTotalA" resultType="int">

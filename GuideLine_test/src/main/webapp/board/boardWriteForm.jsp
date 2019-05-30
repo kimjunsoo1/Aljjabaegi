@@ -8,7 +8,7 @@
 <script type="text/javascript" src="../script/boardScript.js"></script>
 </head>
 <body>
-<form action="boardWrite.do" method="post" name="boardWriteForm">
+<form action="boardWrite.do" method="post" enctype="multipart/form-data" name="boardWriteForm">
 <table border="1">
 	<tr>
 		<th width="50">제목</th>
@@ -18,9 +18,15 @@
 		<th>내용</th>
 		<td><textarea name="content" rows="15" cols="45"></textarea></td>
 	</tr>
+	
+	<tr>
+	<td>파일첨부</td>
+	<td><input type="file" name="upload" multiple/></td>
+</tr>
+	
 	<tr>
 		<td colspan="2" align="center">
-			<input type="button" value="글쓰기" onclick="checkBoardWrite()">
+			<input type="button" value="글쓰기"  onclick="checkBoardWrite()">
 			<input type="reset" value="다시작성">
 		</td>
 	</tr>

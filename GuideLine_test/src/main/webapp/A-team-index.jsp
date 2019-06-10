@@ -44,7 +44,7 @@
 
 <div class="text-center">
 	
-<a href="https://kauth.kakao.com/oauth/authorize?client_id=b066f3a7f97bd5032787a1af9ee29a5c&redirect_uri=http://localhost:8080/GuideLine_test/login/kakaologin.do&response_type=code"> 
+<a href="https://kauth.kakao.com/oauth/authorize?client_id=b066f3a7f97bd5032787a1af9ee29a5c&redirect_uri=http://localhost:8080/login/kakaologin.do&response_type=code"> 
 <img src="./img/kakao_icon.png" class="img-fluid" alt="Responsive image" /> 
 </a>
 

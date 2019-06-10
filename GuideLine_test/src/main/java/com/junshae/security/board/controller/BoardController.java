@@ -1,8 +1,11 @@
 package com.junshae.security.board.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Base64.Decoder;
 import java.util.List;
 
@@ -14,10 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.junshae.security.board.bean.AttachFile;
 import com.junshae.security.board.bean.BoardDTO;
 import com.junshae.security.board.dao.BoardDAO;
+import com.junshae.security.my.commons.WebContants;
 
 
 @Controller
@@ -84,7 +91,9 @@ public class BoardController {
 		//String test = request.getParameter("test");
 		System.out.println("test"+test);
 		int seq = Integer.parseInt(request.getParameter("seq"));
+		
 		int pg = Integer.parseInt(request.getParameter("pg"));
+		List<AttachFile> attachFileList = boardDAO.getAttachFileList(seq);
 		// DB
 		//BoardDAO boardDAO = new BoardDAO();
 		// 조회수 증가
@@ -96,6 +105,11 @@ public class BoardController {
 		modelAndView.addObject("seq", seq);
 		modelAndView.addObject("test", test);
 		modelAndView.addObject("boardDTO", boardDTO);
+		modelAndView.addObject("attachFileList", attachFileList);
+		for (AttachFile attachFile : attachFileList) {
+			System.out.println("finally : " + attachFile.getFilename());
+		}
+		
 		modelAndView.setViewName("boardView.jsp");
 		return modelAndView;
 //		request.setAttribute("pg", pg);
@@ -130,7 +144,7 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value="/board/boardWrite.do")
-	public ModelAndView boardWrite(HttpServletRequest request) {
+	public ModelAndView boardWrite(MultipartHttpServletRequest request) {
 		System.out.println("글 등록 처리");
 		// 데이터
 		try { //한글이 깨지지 않도록 인코딩 설정
@@ -139,19 +153,58 @@ public class BoardController {
 			e.printStackTrace();
 		}
 		HttpSession session = request.getSession();
+		
 		String subject = request.getParameter("subject");
 		String content = request.getParameter("content");
 		String id = (String) session.getAttribute("memId");
 		String name = (String) session.getAttribute("memName");
+		
+		
 		
 		BoardDTO boardDTO = new BoardDTO();
 		boardDTO.setName(name);
 		boardDTO.setId(id);
 		boardDTO.setSubject(subject);
 		boardDTO.setContent(content);
+		
+		int su = boardDAO.boardWrite(boardDTO);
+				
+		boardDTO.setSeq(boardDAO.getNewArticle().getSeq());
+		
+		List<MultipartFile> fileList = request.getFiles("upload");
+		for(MultipartFile mf : fileList){
+			String filename = mf.getOriginalFilename();
+			try {
+				mf.transferTo(new File(WebContants.BASE_PATH + filename));
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("su : "+su);
+		System.out.println("boardDTO " + boardDTO.getSeq());
+		//파일데이터 삽입
+				int size = fileList.size();
+				for (int i = 0; i < size; i++) {
+					MultipartFile mpFile = fileList.get(i);
+					AttachFile attachFile = new AttachFile();
+					String filename = mpFile.getOriginalFilename();	
+					System.out.println("파일명 저장 " +filename);
+					attachFile.setFilename(filename);
+					attachFile.setFiletype(mpFile.getContentType());
+					attachFile.setFilesize(mpFile.getSize());
+					attachFile.setArticleNo(boardDTO.getSeq());
+					boardDAO.insertAttachFile(attachFile);
+				}	
+		System.out.println("글등록 호출 Controller : ");
+		
 		// DB
 		//BoardDAO boardDAO = new BoardDAO();
-		int su = boardDAO.boardWrite(boardDTO);
+		
 		// 검색 결과를 request에 저장하고 저장 화면으로 이동한다.
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("su", su);
@@ -160,6 +213,44 @@ public class BoardController {
 //		request.setAttribute("su", su);
 //		return "boardWrite";
 	}
+	
+	@RequestMapping(value="/board/download.do", method=RequestMethod.POST)
+	public String download(String filename, ModelAndView model){
+		model.addObject("filename", filename);
+		return "../include/download.jsp";
+	}
+	
+	/*@RequestMapping(value="/write", method=RequestMethod.POST)
+	public String write(Article article,
+			MultipartHttpServletRequest mpRequest) throws Exception {
+		
+		article.setEmail("비회원"); //임시
+		boardService.insert(article);
+		article.setArticleNo(boardService.getNewArticle().getArticleNo());
+		
+		//파일업로드
+		List<MultipartFile> fileList = mpRequest.getFiles("upload");
+		for(MultipartFile mf : fileList){
+			String filename = mf.getOriginalFilename();
+			mf.transferTo(new File(WebContants.BASE_PATH + filename));
+		}
+		
+		//파일데이터 삽입
+		int size = fileList.size();
+		for (int i = 0; i < size; i++) {
+			MultipartFile mpFile = fileList.get(i);
+			AttachFile attachFile = new AttachFile();
+			String filename = mpFile.getOriginalFilename();
+			attachFile.setFilename(filename);
+			attachFile.setFiletype(mpFile.getContentType());
+			attachFile.setFilesize(mpFile.getSize());
+			attachFile.setArticleNo(article.getArticleNo());
+			boardService.insertAttachFile(attachFile);
+		}					
+		
+		return "redirect:/bbs/list?boardCd=" + article.getBoardCd();
+	}*/
+	
 }
 
 

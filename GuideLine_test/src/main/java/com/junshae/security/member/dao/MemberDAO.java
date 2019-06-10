@@ -13,11 +13,28 @@ public class MemberDAO {
 	private ResultSet rs = null;
 	
 	public Connection getConnection() {
+		/* oracle
 		String url = "jdbc:oracle:thin:@localhost:1521:xe";
 		String user = "junshae";
 		String password = "1234";
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");			
+			return DriverManager.getConnection(url, user, password);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;*/
+		
+		// mysql 5.7
+		/*jdbc.driverClassName=com.mysql.jdbc.Driver
+		jdbc.url=jdbc:mysql://localhost:3306/example
+		jdbc.usrname=junshae
+		jdbc.password=5678*/
+		String url = "jdbc:mysql://localhost:3306/example";
+		String user = "junshae";
+		String password = "ab4810ui!@";
+		try {
+			Class.forName("com.mysql.jdbc.Driver");			
 			return DriverManager.getConnection(url, user, password);
 		} catch (Exception e) {
 			e.printStackTrace();

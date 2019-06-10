@@ -1,5 +1,6 @@
 package com.junshae.security.board.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.junshae.security.board.bean.AttachFile;
 import com.junshae.security.board.bean.BoardDTO;
 
 
@@ -43,6 +45,23 @@ public class BoardDAO {
 	public int boardDelete(int seq) {		
 		return sqlSession.delete("mybatis.boardMapper.boardDelete", seq);
 	}
+	// 파일 업로드
+	public int insertAttachFile(AttachFile attachFile) {
+		System.out.println("등록 DAO : ");
+		return sqlSession.insert("mybatis.boardMapper.insertAttachFile", attachFile);
+		
+	}
+		
+	//  게시글의 첨부파일 리스트	
+	public List<AttachFile> getAttachFileList(int articleNo) {
+		System.out.println("첨부파일 조회 DAO : ");
+		return sqlSession.selectList("mybatis.boardMapper.getAttachFileList",articleNo);
+	}
+	
+	public BoardDTO getNewArticle() {
+		return sqlSession.selectOne("mybatis.boardMapper.getNewArticle");		
+	}
+	
 }
 
 

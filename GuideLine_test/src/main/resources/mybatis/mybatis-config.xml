@@ -6,6 +6,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	<!-- 클래스에 별명 설정 -->
 	<typeAliases>
 		<typeAlias type="com.junshae.security.board.bean.BoardDTO" alias="boardDTO"/>
+		<typeAlias type="com.junshae.security.board.bean.AttachFile" alias="AttachFile"/>
 	</typeAliases>
 	<!-- SQL Mapper 설정  -->
 	<mappers>

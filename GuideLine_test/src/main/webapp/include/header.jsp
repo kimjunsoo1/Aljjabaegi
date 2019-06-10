@@ -28,8 +28,12 @@ response.setDateHeader("Expires", -1); // Proxies.
     	<c:choose>
 		<c:when test="${empty memId}">		
 		      <li><a href="#"><span class="glyphicon glyphicon-user"></span> 회원가입</a></li>
-		      <li><a href="../index.jsp"><span class="glyphicon glyphicon-log-in"></span> 로그인</a></li>
+		      <li><a href="../A-team-index.jsp"><span class="glyphicon glyphicon-log-in"></span> 로그인</a></li>
       	</c:when>
+      	<c:when test="${login_type eq 'kakao'}">		
+		      <li><a href="#"><span class="glyphicon glyphicon-user">${memName} (${login_type}) </span> </a></li>
+		      <li><a href="/kakao_logout.do"><span class="glyphicon glyphicon-log-out"></span> 로그아웃</a></li>
+      	</c:when>      	
 			<c:otherwise>
 		      <li><a href="#"><span class="glyphicon glyphicon-user">${memName} </span> </a></li>
 		      <li><a href="/logout.do"><span class="glyphicon glyphicon-log-out"></span> 로그아웃 </a></li>		
